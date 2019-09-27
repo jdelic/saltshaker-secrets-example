@@ -1,0 +1,90 @@
+# configure all SSL certs here then reference this pillar in the
+# mailserver-private etc. pillars
+
+# I use a Letsencrypt wildcard certificate for my server, as almost
+# everything is under one domain.
+
+{% set wildcard_certificate = "
+-----BEGIN CERTIFICATE-----
+MIIFWzCCBEOgAwIBAgISA/Qjo0wQmRuNYuh5si/mWULIMA0GCSqGSIb3DQEBCwUA
+MEoxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MSMwIQYDVQQD
+ExpMZXQncyBFbmNyeXB0IEF1dGhvcml0eSBYMzAeFw0xOTA2MDMxOTU4MzRaFw0x
+OTA5MDExOTU4MzRaMBcxFTATBgNVBAMMDCoubWF1cnVzLm5ldDCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAMtFEvjVCqwWDbCqYstAk1KL5bVmEbwNbeNx
+X53FourvGFVw1KGHTJjE6e7qPIszdF426HIOgkfP04sMTY37Gku/FQaTjPdOLm/K
+xb0w2eCiGSKohGvWTQd0SQJnCfFfSQv/1LVt0MsSN/9Vz9tZJ6Pel/8C5vjEmbG5
++8+NwL+U5TGNQCSzfVAI/mxsWVHbjj7A1WJ7JM4/ShjODHyHWzkNt2768fDHi0go
+BQNTe348bOEmhrd7pvBZ6ULPN0DxIejVuhrhDjuNCzT5B2Sz/KWECajvDgRXUw7A
+SskX17Wx0p9Q+zzGNM7/c/c35XpJgPbx95BDEhJgjwuCDQIxWUMCAwEAAaOCAmww
+ggJoMA4GA1UdDwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUH
+AwIwDAYDVR0TAQH/BAIwADAdBgNVHQ4EFgQUsmT3nYlFMBkr+GaJnj81cVrOI9ow
+HwYDVR0jBBgwFoAUqEpqYwR93brm0Tm3pkVl7/Oo7KEwbwYIKwYBBQUHAQEEYzBh
+MC4GCCsGAQUFBzABhiJodHRwOi8vb2NzcC5pbnQteDMubGV0c2VuY3J5cHQub3Jn
+MC8GCCsGAQUFBzAChiNodHRwOi8vY2VydC5pbnQteDMubGV0c2VuY3J5cHQub3Jn
+LzAjBgNVHREEHDAaggwqLm1hdXJ1cy5uZXSCCm1hdXJ1cy5uZXQwTAYDVR0gBEUw
+QzAIBgZngQwBAgEwNwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDov
+L2Nwcy5sZXRzZW5jcnlwdC5vcmcwggEDBgorBgEEAdZ5AgQCBIH0BIHxAO8AdQDi
+aUuuJujpQAnohhu2O4PUPuf+dIj7pI8okwGd3fHb/gAAAWsfIvspAAAEAwBGMEQC
+ICUzxTRWN16LtBunFGzy7aOuF4dKTVbdGAGwHG4+4ojzAiBBNDoVN8ILriNAeDkx
+/PF4JpN/IMbZ6T1Almk6VgkZLwB2ACk8UZZUyDlluqpQ/FgH1Ldvv1h6KXLcpMMM
+9OVFR/R4AAABax8i/UIAAAQDAEcwRQIgYyGGR6atQJ1b6oF/LQmu4yuFQrmHSc6r
+NaPnkiuQUGACIQCKz92zs1hw9MEirBQfUfbPMDD0ey+uCB6WFF8bLYj+AzANBgkq
+hkiG9w0BAQsFAAOCAQEAbwNFrLw9M/ksJzea8uaEtOCBGcseUlHuCWsT74XmbDwu
+bsYjb+Yv/wDNAL0sHEt//Qcyf1A0X3l8I4xq3sD6bD3JqOCAMhPrPAcDXpsxDqXJ
+QmHC/wMQAiLo9blRZcfYFyDMI6ciuQLnsOX0cixR77Vog/aERuhkCbzL8aP7+Fz4
+hvj3Im5NiIv+UwgoFRxBdFOCaJSm83aOu9u0dpvIYLQxNRdEmeUi4b4z312KDu0H
+kN7XGryOf6r0D2MDdxLeDqWsGYwbhel5POcbp3IkTMTc/yrRjvZoSuznqH1uUljM
+aaazPOcZ9yb9sWS8zuvbAfCuHNbhJKQG2yC68axlbQ==
+-----END CERTIFICATE-----
+"|indent(12) %}
+{% set wildcard_certchain = "
+-----BEGIN CERTIFICATE-----
+MIIEkjCCA3qgAwIBAgIQCgFBQgAAAVOFc2oLheynCDANBgkqhkiG9w0BAQsFADA/
+MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT
+DkRTVCBSb290IENBIFgzMB4XDTE2MDMxNzE2NDA0NloXDTIxMDMxNzE2NDA0Nlow
+SjELMAkGA1UEBhMCVVMxFjAUBgNVBAoTDUxldCdzIEVuY3J5cHQxIzAhBgNVBAMT
+GkxldCdzIEVuY3J5cHQgQXV0aG9yaXR5IFgzMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEAnNMM8FrlLke3cl03g7NoYzDq1zUmGSXhvb418XCSL7e4S0EF
+q6meNQhY7LEqxGiHC6PjdeTm86dicbp5gWAf15Gan/PQeGdxyGkOlZHP/uaZ6WA8
+SMx+yk13EiSdRxta67nsHjcAHJyse6cF6s5K671B5TaYucv9bTyWaN8jKkKQDIZ0
+Z8h/pZq4UmEUEz9l6YKHy9v6Dlb2honzhT+Xhq+w3Brvaw2VFn3EK6BlspkENnWA
+a6xK8xuQSXgvopZPKiAlKQTGdMDQMc2PMTiVFrqoM7hD8bEfwzB/onkxEz0tNvjj
+/PIzark5McWvxI0NHWQWM6r6hCm21AvA2H3DkwIDAQABo4IBfTCCAXkwEgYDVR0T
+AQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwfwYIKwYBBQUHAQEEczBxMDIG
+CCsGAQUFBzABhiZodHRwOi8vaXNyZy50cnVzdGlkLm9jc3AuaWRlbnRydXN0LmNv
+bTA7BggrBgEFBQcwAoYvaHR0cDovL2FwcHMuaWRlbnRydXN0LmNvbS9yb290cy9k
+c3Ryb290Y2F4My5wN2MwHwYDVR0jBBgwFoAUxKexpHsscfrb4UuQdf/EFWCFiRAw
+VAYDVR0gBE0wSzAIBgZngQwBAgEwPwYLKwYBBAGC3xMBAQEwMDAuBggrBgEFBQcC
+ARYiaHR0cDovL2Nwcy5yb290LXgxLmxldHNlbmNyeXB0Lm9yZzA8BgNVHR8ENTAz
+MDGgL6AthitodHRwOi8vY3JsLmlkZW50cnVzdC5jb20vRFNUUk9PVENBWDNDUkwu
+Y3JsMB0GA1UdDgQWBBSoSmpjBH3duubRObemRWXv86jsoTANBgkqhkiG9w0BAQsF
+AAOCAQEA3TPXEfNjWDjdGBX7CVW+dla5cEilaUcne8IkCJLxWh9KEik3JHRRHGJo
+uM2VcGfl96S8TihRzZvoroed6ti6WqEBmtzw3Wodatg+VyOeph4EYpr/1wXKtx8/
+wApIvJSwtmVi4MFU5aMqrSDE6ea73Mj2tcMyo5jMd6jmeWUHK8so/joWUoHOUgwu
+X4Po1QYz+3dszkDqMp4fklxBwXRsW10KXzPMTZ+sOPAveyxindmjkW8lGy+QsRlG
+PfZ+G6Z6h7mjem0Y+iWlkYcV4PIWL1iwBi8saCbGS5jN2p8M+X+Q7UNKEkROb3N6
+KOqkqm57TH2H3eDJAkSnh6/DNFu0Qg==
+-----END CERTIFICATE-----
+"|indent(12) %}
+{% set wildcard_key = "
+-----BEGIN RSA PRIVATE KEY-----
+REDACTED
+-----END RSA PRIVATE KEY-----
+"|indent(12) %}
+
+
+ssl:
+    maincert:
+        cert: | {{wildcard_certificate}}
+        key: | {{wildcard_key}}
+        certchain: | {{wildcard_certchain}}
+        combined: |
+            {{wildcard_certificate}}
+            {{wildcard_certchain}}
+        combined-key: |
+            {{wildcard_certificate}}
+            {{wildcard_certchain}}
+            {{wildcard_key}}
+
+
+# vim: syntax=yaml
